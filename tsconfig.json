@@ -1,29 +1,1 @@
-{
-  "compilerOptions": {
-    "module": "commonjs",
-    "target": "es2017",
-    "outDir": "dist",
-    "strict": true,
-    "incremental": true,
-    "sourceMap": true,
-    "removeComments": true,
-    "preserveConstEnums": true,
-    "noImplicitAny": false,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strictNullChecks": false,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    }
-  },
-  "include": [
-    "src/**/*.ts",
-    "test/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
-}
+{    "compilerOptions": {        "module": "commonjs",        "target": "es2017",        "outDir": "dist",        "strict": true,        "incremental": true,        "sourceMap": true,        "removeComments": true,        "preserveConstEnums": true,        "noImplicitAny": false,        "emitDecoratorMetadata": true,        "experimentalDecorators": true,        "esModuleInterop": true,        "allowSyntheticDefaultImports": true,        "strictNullChecks": false,        "skipLibCheck": true,        "baseUrl": ".",        "paths": {            "@/*": [                "src/*"            ]        }    },    "include": [        "src/**/*.ts",        "test/**/*.ts"    ],    "exclude": [        "node_modules"    ]}
