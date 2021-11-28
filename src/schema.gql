@@ -2,7 +2,16 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Help {
+  message: String!
+  name: String!
+}
+
 type Query {
+  help(
+    """The name of the help entry to retrieve."""
+    name: String = "help"
+  ): Help!
   user: User!
 }
 

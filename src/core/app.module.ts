@@ -4,6 +4,7 @@ import { NAMESPACES } from '@/core/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { UserModule } from '@/user/user.module';
 import { join } from 'path';
+import { HelpModule } from '@/core/help/help.module';
 
 @Module({
     imports: [
@@ -13,14 +14,14 @@ import { join } from 'path';
             expandVariables: true,
             load: NAMESPACES
         }),
-        UserModule,
         GraphQLModule.forRoot({
             debug: true,
             playground: true,
             autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
             sortSchema: true
-        })
+        }),
+        HelpModule,
+        UserModule
     ]
 })
-export class AppModule {
-}
+export class AppModule {}

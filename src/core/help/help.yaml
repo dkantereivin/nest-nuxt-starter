@@ -1,0 +1,25 @@
+help:
+  name: help
+  message: |
+    This query offers static help messages about system parts based on `name` argument.
+    The name=`commands` argument returns a list of available commands.
+    This is the most rudimentary resolver which can be used to check system availability,
+    and for E2E testing.
+
+commands:
+  name: commands
+  message: |
+    The following commands are available:
+    - `help`
+    - `commands`
+    - `ping`
+    - `version`
+    If you didn't query this command, then you were redirected here because you entered an invalid command.
+
+ping:
+  name: ping
+  message: pong
+
+version:
+  name: version
+  message: 1
