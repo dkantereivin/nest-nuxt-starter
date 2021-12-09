@@ -2,17 +2,14 @@ import { Args, Query, Resolver } from '@nestjs/graphql';
 import { Help } from './help.model';
 import { readFileSync } from 'fs';
 import yaml from 'yaml';
-import { join } from 'path';
+import { pathTo } from '@/common/utils/files';
 
 @Resolver(() => Help)
 export class HelpResolver {
     private helpEntries: Map<Help['name'], Help> = new Map();
 
     constructor() {
-        const helpFile = readFileSync(
-            join(process.cwd(), 'src/core/help/help.yaml'),
-            'utf8'
-        );
+        const helpFile = readFileSync(pathTo('core/help/help.yaml'), 'utf8');
         const helpEntries = yaml.parse(helpFile);
         for (const name of Object.keys(helpEntries)) {
             this.helpEntries.set(name, helpEntries[name]);
