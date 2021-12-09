@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import request from 'supertest';
+import { AppModule } from '@/core/app.module';
 
-describe('AppController (e2e)', () => {
+describe('Help (e2e)', () => {
     let app: INestApplication;
 
     beforeEach(async () => {
@@ -15,10 +15,11 @@ describe('AppController (e2e)', () => {
         await app.init();
     });
 
-    it('/ (GET)', () => {
+    it('ping -> pong', () => {
         return request(app.getHttpServer())
-            .get('/')
+            .post('/graphql')
+            .send({ query: '{help(name: "ping"){message}}' })
             .expect(200)
-            .expect('Hello World!');
+            .expect({ data: { help: { message: 'pong' } } });
     });
 });

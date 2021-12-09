@@ -5,5 +5,15 @@
   "testRegex": ".e2e-spec.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "moduleNameMapper": {
+    "@/(.*)": "<rootDir>/../src/$1"
+  },
+  "preset": "ts-jest",
+  "globals": {
+    "ts-jest": {
+      "packageJson": "package.json",
+      "tsConfig": "tsconfig.json"
+    }
   }
 }
