@@ -1,0 +1,14 @@
+# Resource, Build Folders
+node_modules
+
+# Docker Files
+.dockerignore
+Dockerfile*
+docker-compose.yaml
+
+# Git
+.git*
+
+# Misc
+.env
+README.md
