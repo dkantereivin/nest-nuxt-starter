@@ -3,8 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import { NAMESPACES } from '@/core/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { UserModule } from '@/user/user.module';
-import { join } from 'path';
 import { HelpModule } from '@/core/help/help.module';
+import { pathTo } from '@/common/utils/files';
 
 @Module({
     imports: [
@@ -17,7 +17,7 @@ import { HelpModule } from '@/core/help/help.module';
         GraphQLModule.forRoot({
             debug: true,
             playground: true,
-            autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+            autoSchemaFile: pathTo('schema.gql'),
             sortSchema: true
         }),
         HelpModule,

@@ -3,4 +3,4 @@ import { appConfig } from './app.config';
 
 const NAMESPACES = [appConfig, databaseConfig];
 
-export { NAMESPACES, databaseConfig };
+export { NAMESPACES, appConfig, databaseConfig };
