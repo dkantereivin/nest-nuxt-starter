@@ -12,3 +12,15 @@ services:
         restart: unless-stopped
         volumes:
             - ./src:/usr/src/api/src # mount src directory for live file system updates
+        depends_on:
+            -   postgres
+
+    postgres:
+        image: postgres:14
+        ports:
+            - '5432:5432'
+        environment:
+#            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+#            - POSTGRES_DB=postgres
+        restart: unless-stopped
