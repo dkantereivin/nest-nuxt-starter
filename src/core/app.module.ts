@@ -5,6 +5,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { UserModule } from '@/user/user.module';
 import { HelpModule } from '@/core/help/help.module';
 import { pathTo } from '@/common/utils/files';
+import { DatabaseModule } from '@/core/database/database.module';
 import { ManagerModule } from '@/core/manager/manager.module';
 
 @Module({
@@ -22,6 +23,7 @@ import { ManagerModule } from '@/core/manager/manager.module';
             autoSchemaFile: pathTo('schema.gql'),
             sortSchema: true
         }),
+        DatabaseModule,
         HelpModule,
         UserModule
     ]
