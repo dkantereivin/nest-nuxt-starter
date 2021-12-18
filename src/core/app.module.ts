@@ -5,9 +5,11 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { UserModule } from '@/user/user.module';
 import { HelpModule } from '@/core/help/help.module';
 import { pathTo } from '@/common/utils/files';
+import { ManagerModule } from '@/core/manager/manager.module';
 
 @Module({
     imports: [
+        ManagerModule,
         ConfigModule.forRoot({
             isGlobal: true,
             cache: true,
