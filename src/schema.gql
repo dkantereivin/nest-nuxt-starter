@@ -2,6 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Help {
   message: String!
   name: String!
@@ -12,10 +17,14 @@ type Query {
     """The name of the help entry to retrieve."""
     name: String = "help"
   ): Help!
-  user: User!
+  user(id: ID!): User!
+  users: [User!]!
 }
 
 type User {
+  createdAt: DateTime!
+  email: String!
   id: ID!
+  updatedAt: DateTime!
   username: String!
 }
