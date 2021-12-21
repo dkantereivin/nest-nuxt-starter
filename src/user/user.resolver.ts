@@ -1,6 +1,7 @@
 import { Args, ID, Query, Resolver } from '@nestjs/graphql';
 import { User } from './entities/user.entity';
 import { PrismaService } from '@/core/database/prisma.service';
+import { Selected } from '@/common/decorators/selected.decorator';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -12,9 +13,13 @@ export class UserResolver {
     // }
 
     @Query(() => User, { name: 'user' })
-    findOne(@Args('id', { type: () => ID }) id: string) {
+    findOne(
+        @Args('id', { type: () => ID }) id: string,
+        @Selected() fields: Record<string, boolean>
+    ) {
         return this.prisma.user.findUnique({
-            where: { id }
+            where: { id },
+            select: fields
         });
     }
 
