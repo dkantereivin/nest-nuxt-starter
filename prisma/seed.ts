@@ -18,6 +18,7 @@ export const seed = async () => {
 
 export const seedUsers = async (cnt: number): Promise<User[]> => {
     const user = async (): Promise<Prisma.UserCreateInput> => ({
+        active: Math.random() < 0.8,
         email: internet.email(),
         username: internet.userName(),
         password: await hash(internet.password(), 8)
