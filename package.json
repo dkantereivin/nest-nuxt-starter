@@ -32,6 +32,7 @@
     "@nestjs/platform-express": "^8.2.3",
     "@prisma/client": "^3.7.0",
     "apollo-server-express": "^3.5.0",
+    "bcrypt": "^5.0.1",
     "bcryptjs": "^2.4.3",
     "dotenv": "^10.0.0",
     "graphql": "15.7.2",
@@ -41,12 +42,14 @@
     "yaml": "^1.10.2"
   },
   "devDependencies": {
+    "@faker-js/faker": "^6.0.0-alpha.5",
+    "@golevelup/ts-jest": "^0.3.2",
     "@nestjs/cli": "^8.1.5",
     "@nestjs/schematics": "^8.0.5",
     "@nestjs/testing": "^8.2.3",
+    "@types/bcrypt": "^5.0.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/express": "^4.17.13",
-    "@types/faker": "^5.5.9",
     "@types/jest": "^27.0.3",
     "@types/lodash": "^4.14.178",
     "@types/node": "^16.11.12",
@@ -57,7 +60,6 @@
     "eslint": "^8.4.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "faker": "^5.5.3",
     "jest": "^27.4.3",
     "prettier": "^2.5.1",
     "prisma": "^3.7.0",
@@ -86,7 +88,7 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "moduleNameMapper": {
-      "@/(.*)": "<rootDir>/src/$1"
+      "@/(.*)": "<rootDir>/$1"
     }
   },
   "prisma": {

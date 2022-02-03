@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient, User } from '@prisma/client';
-import { internet } from 'faker';
+import faker  from '@faker-js/faker';
 import { hash } from 'bcryptjs';
 
 const prisma = new PrismaClient();
@@ -19,9 +19,9 @@ export const seed = async () => {
 export const seedUsers = async (cnt: number): Promise<User[]> => {
     const user = async (): Promise<Prisma.UserCreateInput> => ({
         active: Math.random() < 0.8,
-        email: internet.email(),
-        username: internet.userName(),
-        password: await hash(internet.password(), 8)
+        email: faker.internet.email(),
+        username: faker.internet.userName(),
+        password: await hash(faker.internet.password(), 8)
     });
 
     const users = await Promise.all(Array.from(
