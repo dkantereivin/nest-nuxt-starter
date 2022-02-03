@@ -7,6 +7,7 @@ import { pathTo } from '@/common/utils/files';
 import { DatabaseModule } from '@/core/database/database.module';
 import { UserModule } from '@/user/user.module';
 import { ManagerModule } from '@/core/manager/manager.module';
+import { GraphQLError } from 'graphql';
 
 @Module({
     imports: [
@@ -21,7 +22,9 @@ import { ManagerModule } from '@/core/manager/manager.module';
             debug: true,
             playground: true,
             autoSchemaFile: pathTo('schema.gql'),
-            sortSchema: true
+            sortSchema: true,
+            formatError: (error: GraphQLError) =>
+                error.extensions?.exception?.response?.message || error.message
         }),
         DatabaseModule,
         HelpModule,
