@@ -8,6 +8,7 @@ import { DatabaseModule } from '@/core/database/database.module';
 import { UserModule } from '@/user/user.module';
 import { ManagerModule } from '@/core/manager/manager.module';
 import { GraphQLError } from 'graphql';
+import { AuthModule } from '@/core/auth/auth.module';
 
 @Module({
     imports: [
@@ -28,6 +29,7 @@ import { GraphQLError } from 'graphql';
         }),
         DatabaseModule,
         HelpModule,
+        AuthModule,
         UserModule
     ]
 })

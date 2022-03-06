@@ -12,6 +12,10 @@ type Help {
   name: String!
 }
 
+type Mutation {
+  login(password: String!, usernameOrEmail: String!): String!
+}
+
 type Query {
   help(
     """The name of the help entry to retrieve."""
