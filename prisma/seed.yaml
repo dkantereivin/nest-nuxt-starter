@@ -1,0 +1,9 @@
+users:
+    -   username: example
+        email: example@example.com
+        password: example
+        active: true
+    -   username: inactive
+        email: inactive@example.com
+        password: inactive
+        active: false
