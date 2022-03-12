@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { NAMESPACES } from '@/core/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { HelpModule } from '@/core/help/help.module';
@@ -9,6 +9,7 @@ import { UserModule } from '@/user/user.module';
 import { ManagerModule } from '@/core/manager/manager.module';
 import { GraphQLError } from 'graphql';
 import { AuthModule } from '@/core/auth/auth.module';
+import { RedisModule } from '@/core/redis/redis.module';
 
 @Module({
     imports: [
@@ -26,6 +27,10 @@ import { AuthModule } from '@/core/auth/auth.module';
             sortSchema: true,
             formatError: (error: GraphQLError) =>
                 error.extensions?.exception?.response?.message || error.message
+        }),
+        RedisModule.forRootAsync({
+            inject: [ConfigService],
+            useFactory: (config: ConfigService) => config.get('redis.url')
         }),
         DatabaseModule,
         HelpModule,
