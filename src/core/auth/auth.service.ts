@@ -1,11 +1,21 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { RegisterDto } from './dto/register.dto';
 import { PrismaService } from '@/core/database/prisma.service';
-import { hash, compare } from 'bcrypt';
+import { compare, hash } from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { Prisma, User } from '@prisma/client';
 import { PrismaError } from '@/core/database/prisma-error.enum';
 import { offendingFields } from '@/common/utils/prisma';
+import { RedisService } from '@/core/redis/redis.service';
+import { JwtService } from '@nestjs/jwt';
+import {
+    FullRefreshPayload,
+    RefreshPayload,
+    TokenFingerprintPair
+} from '@/core/auth/dto/jwt.dto';
+import { generateFingerprint, sha256 } from '@/common/utils/crypto';
+import * as AuthExceptions from '@/common/exceptions/auth';
+import { TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
 
 type UserNoPassword = Omit<User, 'password'>;
 
@@ -13,6 +23,8 @@ type UserNoPassword = Omit<User, 'password'>;
 export class AuthService {
     constructor(
         private readonly prisma: PrismaService,
+        private readonly redis: RedisService,
+        private readonly jwtService: JwtService,
         private readonly config: ConfigService
     ) {}
 
@@ -51,7 +63,7 @@ export class AuthService {
         }
     }
 
-    async validateLocal(
+    async useLocal(
         userOrEmail: string,
         password: string
     ): Promise<UserNoPassword> {
@@ -62,34 +74,90 @@ export class AuthService {
         });
 
         if (!user) {
-            throw new HttpException(
-                {
-                    reason: 'UserNotFound',
-                    message: `User with the provided username or email was not found.`
-                },
-                HttpStatus.NOT_FOUND
-            );
+            throw new AuthExceptions.UserNotFound();
         }
 
         const isPasswordValid = await compare(password, user.password);
         if (!isPasswordValid) {
-            throw new HttpException(
-                {
-                    reason: 'InvalidCredentials',
-                    message: `Invalid credentials provided.`
-                },
-                HttpStatus.UNAUTHORIZED
-            );
+            throw new AuthExceptions.InvalidCredentials();
         }
 
         if (!user.active) {
-            throw new HttpException(
-                {
-                    reason: 'UserDisabled',
-                    message: `This user has been marked inactive. This can be corrected by an administrator.`
-                },
-                HttpStatus.FORBIDDEN
-            );
+            throw new AuthExceptions.UserDisabled();
+        }
+
+        delete user.password;
+        return user;
+    }
+
+    async grantAccessToken(user: UserNoPassword): Promise<string> {
+        return await this.jwtService.signAsync(
+            { user: user.username },
+            {
+                subject: user.id,
+                expiresIn: `${this.config.get<string>('auth.jwt.time.access')}s`
+            }
+        );
+    }
+
+    async grantRefreshToken(
+        user: UserNoPassword
+    ): Promise<TokenFingerprintPair> {
+        const fingerprint = generateFingerprint();
+        const expirySeconds = parseInt(
+            this.config.get<string>('auth.jwt.time.refresh')
+        );
+
+        const payload: RefreshPayload = {
+            fingerprint: sha256(fingerprint),
+            username: user.username
+        };
+        const token = await this.jwtService.signAsync(payload, {
+            subject: user.id,
+            expiresIn: `${expirySeconds}s`
+        });
+
+        await this.redis.set(
+            `jwt:${sha256(token)}:usages`,
+            0,
+            'ex',
+            expirySeconds * 2
+        );
+        return { fingerprint, token };
+    }
+
+    async useRefreshToken(
+        token: string,
+        fingerprint: string
+    ): Promise<UserNoPassword> {
+        const payload: FullRefreshPayload = await this.jwtService
+            .verifyAsync(token)
+            .catch((e) => {
+                if (e instanceof TokenExpiredError) {
+                    throw new AuthExceptions.TokenExpired();
+                } else if (e instanceof JsonWebTokenError) {
+                    throw new AuthExceptions.TokenInvalid();
+                }
+                throw e;
+            });
+
+        if (sha256(fingerprint) !== payload.fingerprint) {
+            throw new AuthExceptions.FingerprintMismatch();
+        }
+
+        if (parseInt(await this.redis.get(`jwt:${token}:usages`)) > 0) {
+            // TODO: add security follow up to better address replay/side-jacking
+            throw new AuthExceptions.TokenUsed();
+        }
+
+        await this.redis.incr(`jwt:${token}:usages`);
+
+        const user = await this.prisma.user.findFirst({
+            where: { id: payload.subject, active: true }
+        });
+
+        if (!user) {
+            throw new AuthExceptions.UserNotFound();
         }
 
         delete user.password;

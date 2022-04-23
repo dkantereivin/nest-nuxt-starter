@@ -12,8 +12,14 @@ type Help {
   name: String!
 }
 
+type JwtTokenPair {
+  access: String!
+  refresh: String!
+}
+
 type Mutation {
   login(password: String!, usernameOrEmail: String!): String!
+  refreshTokens(refreshToken: String!): JwtTokenPair!
 }
 
 type Query {

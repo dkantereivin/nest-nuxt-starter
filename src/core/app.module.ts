@@ -25,6 +25,7 @@ import { RedisModule } from '@/core/redis/redis.module';
             playground: true,
             autoSchemaFile: pathTo('schema.gql'),
             sortSchema: true,
+            context: ({ req, res }) => ({ req, res }),
             formatError: (error: GraphQLError) =>
                 error.extensions?.exception?.response?.message || error.message
         }),
