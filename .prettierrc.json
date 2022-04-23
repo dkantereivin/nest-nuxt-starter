@@ -4,6 +4,6 @@
     "printWidth": 80,
     "tabWidth": 4,
     "proseWrap": "always",
-    "requireConfig": false,
-    "trailingComma": "none"
+    "trailingComma": "none",
+    "endOfLine": "lf"
 }
