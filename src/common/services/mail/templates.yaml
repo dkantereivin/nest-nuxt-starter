@@ -1,0 +1,12 @@
+-   templateName: emailConfirm
+    templateId: d-d0048eecc6e441e7952ff3f309e1b6b8
+    from: default
+    environments:
+        - development
+        - staging
+        - production
+    data:
+        - appName
+        - username
+        - email
+        - url

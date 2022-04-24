@@ -10,6 +10,7 @@ import { ManagerModule } from '@/core/manager/manager.module';
 import { GraphQLError } from 'graphql';
 import { AuthModule } from '@/core/auth/auth.module';
 import { RedisModule } from '@/core/redis/redis.module';
+import { MailModule } from '@/common/services/mail/mail.module';
 
 @Module({
     imports: [
@@ -35,6 +36,7 @@ import { RedisModule } from '@/core/redis/redis.module';
         }),
         DatabaseModule,
         HelpModule,
+        MailModule,
         AuthModule,
         UserModule
     ]

@@ -12,6 +12,14 @@ export const UserNotFound = StandardException(
     HttpStatus.NOT_FOUND
 );
 
+export const UserUnverified = StandardException(
+    {
+        reason: StandardExceptionReason.USER_UNVERIFIED,
+        message: `User has not yet verified their email address.`
+    },
+    HttpStatus.UNAUTHORIZED
+);
+
 export const UserDisabled = StandardException(
     {
         reason: StandardExceptionReason.USER_DISABLED,

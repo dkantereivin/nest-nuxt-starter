@@ -17,6 +17,7 @@ export interface FullRefreshPayload extends RefreshPayload {
 
 export interface AccessPayload {
     username: string;
+    restricted?: boolean;
 }
 
 export interface FullAccessPayload extends AccessPayload {
