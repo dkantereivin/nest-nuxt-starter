@@ -9,9 +9,7 @@ export const Cookies = createParamDecorator(
     }
 );
 
-export const Cookie = createParamDecorator(
-    (name: string, context: ExecutionContext): string => {
-        const { req } = GqlExecutionContext.create(context).getContext();
-        return parseCookies(req.headers.cookie)[name];
-    }
-);
+export const Cookie = createParamDecorator((name: string, context: ExecutionContext): string => {
+    const { req } = GqlExecutionContext.create(context).getContext();
+    return parseCookies(req.headers.cookie)[name];
+});

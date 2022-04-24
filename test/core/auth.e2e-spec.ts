@@ -33,11 +33,9 @@ describe('Auth (e2e)', () => {
         });
 
         it('should return a token for valid EMAIL + password', () => {
-            return sendRequest('example@example.com', 'example').expect(
-                (res) => {
-                    expect(isJWT(res.body.data.login)).toBeTruthy();
-                }
-            );
+            return sendRequest('example@example.com', 'example').expect((res) => {
+                expect(isJWT(res.body.data.login)).toBeTruthy();
+            });
         });
 
         it('should fail for incorrect password', () => {

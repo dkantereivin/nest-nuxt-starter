@@ -9,12 +9,9 @@ import { RedisService } from './redis.service';
 import { RedisOptions } from 'ioredis';
 import { REDIS_CONFIG_PROVIDER } from './redis.constants';
 
-export interface RedisModuleAsyncOptions
-    extends Pick<ModuleMetadata, 'imports'> {
+export interface RedisModuleAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
     inject?: (InjectionToken | OptionalFactoryDependency)[];
-    useFactory: (
-        ...args: any[]
-    ) => Promise<RedisOptions | string> | RedisOptions | string;
+    useFactory: (...args: any[]) => Promise<RedisOptions | string> | RedisOptions | string;
 }
 
 @Module({})

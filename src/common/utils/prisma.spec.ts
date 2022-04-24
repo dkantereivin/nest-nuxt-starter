@@ -12,9 +12,7 @@ describe('common/utils/prisma', () => {
             expect(offendingFields(['item1', 'item2'])).toBe('item1 and item2');
         });
         it('should return item1, item2 and item3 if fields is three items', () => {
-            expect(offendingFields(['item1', 'item2', 'item3'])).toBe(
-                'item1, item2 and item3'
-            );
+            expect(offendingFields(['item1', 'item2', 'item3'])).toBe('item1, item2 and item3');
         });
     });
 });
