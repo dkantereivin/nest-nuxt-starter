@@ -7,3 +7,7 @@ users:
         email: inactive@example.com
         password: inactive
         active: false
+    -   username: emailpending
+        email: pending@example.com
+        password: pending
+        active: true

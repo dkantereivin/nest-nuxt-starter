@@ -21,7 +21,9 @@ export interface AccessPayload {
 }
 
 export interface FullAccessPayload extends AccessPayload {
-    subject: string;
+    iat: Date;
+    exp: Date;
+    sub: string;
 }
 
 @ObjectType()

@@ -4,6 +4,14 @@ import {
 } from '@/common/exceptions/standard-exception.mixin';
 import { HttpStatus } from '@nestjs/common';
 
+export const Unauthorized = StandardException(
+    {
+        reason: StandardExceptionReason.UNAUTHORIZED,
+        message: `Unauthorized`
+    },
+    HttpStatus.UNAUTHORIZED
+);
+
 export const UserNotFound = StandardException(
     {
         reason: StandardExceptionReason.USER_NOT_FOUND,

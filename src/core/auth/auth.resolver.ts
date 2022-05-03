@@ -5,13 +5,16 @@ import { JwtTokenPair } from '@/core/auth/dto/jwt.dto';
 import * as AuthExceptions from '@/common/exceptions/auth';
 import { Cookies } from '@/common/decorators/cookies.decorator';
 import { User } from '@prisma/client';
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
+import { JwtGuard } from '@/core/auth/guards/jwt.guard';
+import { AllowRestricted } from '@/core/auth/decorators/allow-restricted.decorator';
+import { FullUser } from '@/core/auth/decorators/full-user.decorator';
 
 @Resolver()
 export class AuthResolver {
     constructor(private readonly authService: AuthService) {}
 
-    @Mutation(() => String)
+    @Mutation(() => JwtTokenPair)
     async login(
         @Args({ name: 'usernameOrEmail', type: () => String })
         usernameOrEmail: string,
@@ -52,12 +55,15 @@ export class AuthResolver {
     }
 
     // todo: make mutation require sign in with matching email with restricted allowed
-    @Mutation(() => Boolean)
+    // todo: implement rate-limit (based on keys) in redis, as a decorator (by userid)
+    @Mutation(() => String)
+    @UseGuards(JwtGuard)
+    @AllowRestricted()
     async resendEmailConfirmation(
-        @Args({ name: 'email', type: () => String }) email: string
-    ): Promise<boolean> {
-        throw new HttpException('Not implemented', HttpStatus.NOT_IMPLEMENTED);
-        let user: User;
+        @Args({ name: 'email', type: () => String }) email: string,
+        @FullUser() user: User
+    ): Promise<string> {
         await this.authService.sendConfirmationEmail(user);
+        return email;
     }
 }

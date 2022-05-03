@@ -18,8 +18,9 @@ type JwtTokenPair {
 }
 
 type Mutation {
-  login(password: String!, usernameOrEmail: String!): String!
+  login(password: String!, usernameOrEmail: String!): JwtTokenPair!
   refreshTokens(refreshToken: String!): JwtTokenPair!
+  resendEmailConfirmation(email: String!): String!
 }
 
 type Query {

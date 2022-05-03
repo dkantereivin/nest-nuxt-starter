@@ -20,7 +20,7 @@ import * as AuthExceptions from '@/common/exceptions/auth';
 import { TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
 import { MailService } from '@/common/services/mail/mail.service';
 
-type UserNoPassword = Omit<User, 'password'>;
+export type UserNoPassword = Omit<User, 'password'>;
 
 @Injectable()
 export class AuthService {
@@ -140,15 +140,14 @@ export class AuthService {
     }
 
     async useAccessToken(token: string): Promise<FullAccessPayload> {
-        return await this.jwtService.verifyAsync<FullAccessPayload>(token)
-            .catch((e) => {
-                if (e instanceof TokenExpiredError) {
-                    throw new AuthExceptions.TokenExpired();
-                } else if (e instanceof JsonWebTokenError) {
-                    throw new AuthExceptions.TokenInvalid();
-                }
-                throw e;
-            })
+        return await this.jwtService.verifyAsync<FullAccessPayload>(token).catch((e) => {
+            if (e instanceof TokenExpiredError) {
+                throw new AuthExceptions.TokenExpired();
+            } else if (e instanceof JsonWebTokenError) {
+                throw new AuthExceptions.TokenInvalid();
+            }
+            throw e;
+        });
     }
 
     async useRefreshToken(token: string, fingerprint: string): Promise<UserNoPassword> {

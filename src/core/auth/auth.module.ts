@@ -4,6 +4,8 @@ import { ConfigService } from '@nestjs/config';
 import { AuthResolver } from '@/core/auth/auth.resolver';
 import { AuthService } from '@/core/auth/auth.service';
 import { MailModule } from '@/common/services/mail/mail.module';
+import { JwtGuard } from '@/core/auth/guards/jwt.guard';
+import { FullUserPipe } from '@/core/auth/pipes/full-user.pipe';
 
 @Module({
     imports: [
@@ -15,6 +17,6 @@ import { MailModule } from '@/common/services/mail/mail.module';
         }),
         MailModule
     ],
-    providers: [AuthResolver, AuthService]
+    providers: [AuthResolver, AuthService, JwtGuard, FullUserPipe]
 })
 export class AuthModule {}
