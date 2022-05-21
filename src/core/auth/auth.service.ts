@@ -19,6 +19,7 @@ import { generateFingerprint, sha256 } from '@/common/utils/crypto';
 import * as AuthExceptions from '@/common/exceptions/auth';
 import { TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
 import { MailService } from '@/common/services/mail/mail.service';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
 export type UserNoPassword = Omit<User, 'password'>;
 
@@ -107,6 +108,40 @@ export class AuthService {
             email: user.email,
             url
         });
+    }
+
+    async verifyUserEmailByToken(token: string): Promise<UserNoPassword> {
+        const { subject, email } = await this.jwtService.verifyAsync(token).catch((e) => {
+            if (e instanceof TokenExpiredError) {
+                throw new AuthExceptions.TokenExpired();
+            } else if (e instanceof JsonWebTokenError) {
+                throw new AuthExceptions.TokenInvalid();
+            }
+            throw e;
+        });
+        return this.verifyUserEmail(subject, email);
+    }
+
+    async verifyUserEmail(id: string, email: string): Promise<UserNoPassword> {
+        return this.prisma.user
+            .update({
+                data: {
+                    emailVerified: true
+                },
+                where: {
+                    id,
+                    email
+                }
+            })
+            .catch((e) => {
+                if (
+                    e instanceof PrismaClientKnownRequestError &&
+                    e.code === PrismaError.RelatedRecordNotFound
+                ) {
+                    throw new AuthExceptions.UserNotFound();
+                }
+                throw e;
+            });
     }
 
     async grantAccessToken(user: UserNoPassword, restricted?: boolean): Promise<string> {

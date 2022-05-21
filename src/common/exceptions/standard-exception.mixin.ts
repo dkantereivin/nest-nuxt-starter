@@ -2,6 +2,7 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 
 export enum StandardExceptionReason {
     UNAUTHORIZED = 'Unauthorized',
+    FORBIDDEN = 'Forbidden',
     USER_NOT_FOUND = 'UserNotFound',
     USER_UNVERIFIED = 'UserUnverified',
     USER_DISABLED = 'UserDisabled',

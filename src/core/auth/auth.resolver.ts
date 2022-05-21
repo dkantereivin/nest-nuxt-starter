@@ -5,10 +5,15 @@ import { JwtTokenPair } from '@/core/auth/dto/jwt.dto';
 import * as AuthExceptions from '@/common/exceptions/auth';
 import { Cookies } from '@/common/decorators/cookies.decorator';
 import { User } from '@prisma/client';
-import { UseGuards } from '@nestjs/common';
+import { HttpStatus, UseGuards } from '@nestjs/common';
 import { JwtGuard } from '@/core/auth/guards/jwt.guard';
 import { AllowRestricted } from '@/core/auth/decorators/allow-restricted.decorator';
 import { FullUser } from '@/core/auth/decorators/full-user.decorator';
+import {
+    StandardException,
+    StandardExceptionReason
+} from '@/common/exceptions/standard-exception.mixin';
+import { UserQL } from '@/user/entities/user.ql';
 
 @Resolver()
 export class AuthResolver {
@@ -54,16 +59,30 @@ export class AuthResolver {
         };
     }
 
-    // todo: make mutation require sign in with matching email with restricted allowed
+    @Mutation(() => UserQL)
+    async verifyEmail(
+        @Args({ name: 'validationToken', type: () => String })
+        validationToken: string
+    ): Promise<UserQL> {
+        return this.authService.verifyUserEmailByToken(validationToken);
+    }
+
     // todo: implement rate-limit (based on keys) in redis, as a decorator (by userid)
     @Mutation(() => String)
     @UseGuards(JwtGuard)
     @AllowRestricted()
-    async resendEmailConfirmation(
-        @Args({ name: 'email', type: () => String }) email: string,
-        @FullUser() user: User
-    ): Promise<string> {
+    async resendEmailConfirmation(@FullUser() user: User): Promise<string> {
+        if (user.emailVerified) {
+            const err = StandardException(
+                {
+                    reason: StandardExceptionReason.FORBIDDEN,
+                    message: `This account already has a verified email associated with it.`
+                },
+                HttpStatus.BAD_REQUEST
+            );
+            throw new err();
+        }
         await this.authService.sendConfirmationEmail(user);
-        return email;
+        return user.email;
     }
 }

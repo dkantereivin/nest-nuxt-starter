@@ -1,9 +1,9 @@
 import { Args, ID, Query, Resolver } from '@nestjs/graphql';
-import { User } from './entities/user.entity';
+import { UserQL } from './entities/user.ql';
 import { PrismaService } from '@/core/database/prisma.service';
 import { Selected } from '@/common/decorators/selected.decorator';
 
-@Resolver(() => User)
+@Resolver(() => UserQL)
 export class UserResolver {
     constructor(private readonly prisma: PrismaService) {}
 
@@ -12,7 +12,7 @@ export class UserResolver {
     //     return this.userService.create(createUserInput);
     // }
 
-    @Query(() => User, { name: 'user' })
+    @Query(() => UserQL, { name: 'user' })
     findOne(
         @Args('id', { type: () => ID }) id: string,
         @Selected() fields: Record<string, boolean>
@@ -23,7 +23,7 @@ export class UserResolver {
         });
     }
 
-    @Query(() => [User], { name: 'users' })
+    @Query(() => [UserQL], { name: 'users' })
     findAll() {
         return this.prisma.user.findMany();
     }
