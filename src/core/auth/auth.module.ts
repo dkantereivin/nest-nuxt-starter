@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { AuthResolver } from '@/core/auth/auth.resolver';
@@ -7,6 +7,7 @@ import { MailModule } from '@/common/services/mail/mail.module';
 import { JwtGuard } from '@/core/auth/guards/jwt.guard';
 import { FullUserPipe } from '@/core/auth/pipes/full-user.pipe';
 
+@Global()
 @Module({
     imports: [
         JwtModule.registerAsync({
@@ -17,6 +18,7 @@ import { FullUserPipe } from '@/core/auth/pipes/full-user.pipe';
         }),
         MailModule
     ],
-    providers: [AuthResolver, AuthService, JwtGuard, FullUserPipe]
+    providers: [AuthResolver, AuthService, JwtGuard, FullUserPipe],
+    exports: [AuthService, JwtGuard, FullUserPipe]
 })
 export class AuthModule {}

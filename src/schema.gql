@@ -2,6 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input CreateUserDto {
+  email: String!
+  password: String!
+  username: String!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -18,9 +24,11 @@ type JwtTokenPair {
 }
 
 type Mutation {
+  createUser(createUserInput: CreateUserDto!): UserQL!
   login(password: String!, usernameOrEmail: String!): JwtTokenPair!
   refreshTokens(refreshToken: String!): JwtTokenPair!
-  resendEmailConfirmation(email: String!): String!
+  resendEmailConfirmation: String!
+  verifyEmail(validationToken: String!): UserQL!
 }
 
 type Query {
@@ -28,13 +36,14 @@ type Query {
     """The name of the help entry to retrieve."""
     name: String = "help"
   ): Help!
-  user(id: ID!): User!
-  users: [User!]!
+  user(id: ID!): UserQL!
+  users: [UserQL!]!
 }
 
-type User {
+type UserQL {
   createdAt: DateTime!
   email: String!
+  emailVerified: Boolean!
   id: ID!
   updatedAt: DateTime!
   username: String!

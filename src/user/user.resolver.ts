@@ -1,16 +1,43 @@
-import { Args, ID, Query, Resolver } from '@nestjs/graphql';
+import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UserQL } from './entities/user.ql';
 import { PrismaService } from '@/core/database/prisma.service';
 import { Selected } from '@/common/decorators/selected.decorator';
+import { CreateUserDto } from '@/user/dto/create-user.dto';
+import { AuthService } from '@/core/auth/auth.service';
+import PasswordValidator from 'password-validator';
+import { HttpException, HttpStatus } from '@nestjs/common';
+import { StandardExceptionBody } from '@/common/exceptions/standard-exception.mixin';
+
+// prettier-ignore
+const passwordSpec = new PasswordValidator()
+    .is().min(8).max(128)
+    .has().lowercase()
+    .has().uppercase()
+    .has().digits()
+    .has().symbols();
 
 @Resolver(() => UserQL)
 export class UserResolver {
-    constructor(private readonly prisma: PrismaService) {}
+    constructor(
+        private readonly prisma: PrismaService,
+        private readonly authService: AuthService
+    ) {}
 
-    // @Mutation(() => User)
-    // createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
-    //     return this.userService.create(createUserInput);
-    // }
+    // todo: recaptcha
+    @Mutation(() => UserQL)
+    createUser(@Args('createUserInput') createUserInput: CreateUserDto) {
+        if (!passwordSpec.validate(createUserInput.password)) {
+            throw new HttpException(
+                <StandardExceptionBody>{
+                    reason: 'PasswordValidationFailed',
+                    message: `The provided password does not meet the security requirements.`,
+                    metadata: passwordSpec.validate(createUserInput.password, { details: true })
+                },
+                HttpStatus.BAD_REQUEST
+            );
+        }
+        return this.authService.register(createUserInput);
+    }
 
     @Query(() => UserQL, { name: 'user' })
     findOne(

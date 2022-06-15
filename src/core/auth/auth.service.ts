@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { RegisterDto } from './dto/register.dto';
+import { CreateUserDto } from '@/user/dto/create-user.dto';
 import { PrismaService } from '@/core/database/prisma.service';
 import { compare, hash } from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
@@ -33,7 +33,7 @@ export class AuthService {
         private readonly config: ConfigService
     ) {}
 
-    async register(registrationData: RegisterDto): Promise<UserNoPassword> {
+    async register(registrationData: CreateUserDto): Promise<UserNoPassword> {
         // todo: validate password strength
         const hashedPassword = await hash(
             registrationData.password,
