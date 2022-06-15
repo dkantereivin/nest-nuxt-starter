@@ -5,7 +5,7 @@ RUN apk add --no-cache python3 g++ make curl && \
 
 WORKDIR /usr/src/api
 
-COPY package.json pnpm-lock.yaml ./
+COPY .npmrc package.json pnpm-lock.yaml ./
 RUN pnpm install
 
 COPY . .
