@@ -7,6 +7,7 @@ import { AuthService } from '@/core/auth/auth.service';
 import PasswordValidator from 'password-validator';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { StandardExceptionBody } from '@/common/exceptions/standard-exception.mixin';
+import { RequireCaptcha } from '@/core/auth/decorators/require-captcha.decorator';
 
 // prettier-ignore
 const passwordSpec = new PasswordValidator()
@@ -23,7 +24,7 @@ export class UserResolver {
         private readonly authService: AuthService
     ) {}
 
-    // todo: recaptcha
+    @RequireCaptcha(0.75)
     @Mutation(() => UserQL)
     createUser(@Args('createUserInput') createUserInput: CreateUserDto) {
         if (!passwordSpec.validate(createUserInput.password)) {

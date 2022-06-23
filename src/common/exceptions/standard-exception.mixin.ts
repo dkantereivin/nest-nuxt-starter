@@ -10,11 +10,12 @@ export enum StandardExceptionReason {
     TOKEN_EXPIRED = 'TokenExpired',
     TOKEN_INVALID = 'TokenInvalid',
     TOKEN_USED = 'TokenUsed',
+    RECAPTCHA_FAILED = 'RecaptchaFailed',
     FINGERPRINT_MISMATCH = 'FingerprintMismatch'
 }
 
 export interface StandardExceptionBody {
-    reason: StandardExceptionReason;
+    reason: StandardExceptionReason | string;
     message: string;
 }
 

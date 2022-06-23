@@ -75,3 +75,11 @@ export const FingerprintMismatch = StandardException(
     },
     HttpStatus.UNAUTHORIZED
 );
+
+export const RecaptchaFailed = StandardException(
+    {
+        reason: StandardExceptionReason.RECAPTCHA_FAILED,
+        message: `The provided recaptcha response is invalid or none was provided.`
+    },
+    HttpStatus.UNAUTHORIZED
+);
