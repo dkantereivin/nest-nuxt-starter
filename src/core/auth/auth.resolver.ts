@@ -33,7 +33,7 @@ export class AuthResolver {
         hardCookie(res, 'fingerprint', fingerprint);
 
         return {
-            access: await this.authService.grantAccessToken(user, true),
+            access: await this.authService.grantAccessToken(user, true), // bug ?
             refresh: token
         };
     }

@@ -34,10 +34,9 @@ export class AuthService {
     ) {}
 
     async register(registrationData: CreateUserDto): Promise<UserNoPassword> {
-        // todo: validate password strength
         const hashedPassword = await hash(
             registrationData.password,
-            this.config.get<string>('auth.saltRounds')
+            this.config.get<number>('auth.saltRounds')
         );
 
         try {
@@ -199,7 +198,7 @@ export class AuthService {
             throw new AuthExceptions.FingerprintMismatch();
         }
 
-        if (parseInt(await this.redis.get(`jwt:${token}:usages`)) > 0) {
+        if (parseInt(await this.redis.get(`jwt:${token}:usages`)) >= 1) {
             // TODO: add security follow up to better address replay/side-jacking
             throw new AuthExceptions.TokenUsed();
         }
