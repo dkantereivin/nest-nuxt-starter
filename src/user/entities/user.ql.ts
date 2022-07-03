@@ -1,9 +1,12 @@
 import { Field, GraphQLISODateTime, ID, ObjectType } from '@nestjs/graphql';
 
-@ObjectType()
+@ObjectType('User')
 export class UserQL {
     @Field(() => ID)
     id: string;
+
+    @Field()
+    active: boolean;
 
     @Field()
     email: string;

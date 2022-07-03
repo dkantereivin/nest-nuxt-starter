@@ -24,11 +24,11 @@ type JwtTokenPair {
 }
 
 type Mutation {
-  createUser(createUserInput: CreateUserDto!): UserQL!
+  createUser(createUserInput: CreateUserDto!): User!
   login(password: String!, usernameOrEmail: String!): JwtTokenPair!
   refreshTokens(refreshToken: String!): JwtTokenPair!
   resendEmailConfirmation: String!
-  verifyEmail(validationToken: String!): UserQL!
+  verifyEmail(validationToken: String!): User!
 }
 
 type Query {
@@ -36,11 +36,12 @@ type Query {
     """The name of the help entry to retrieve."""
     name: String = "help"
   ): Help!
-  user(id: ID!): UserQL!
-  users: [UserQL!]!
+  user(id: ID!): User!
+  users: [User!]!
 }
 
-type UserQL {
+type User {
+  active: Boolean!
   createdAt: DateTime!
   email: String!
   emailVerified: Boolean!
