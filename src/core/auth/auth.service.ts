@@ -147,6 +147,7 @@ export class AuthService {
     async grantAccessToken(user: UserNoPassword, restricted?: boolean): Promise<string> {
         return await this.jwtService.signAsync(
             <AccessPayload>{
+                t: TokenType.ACCESS,
                 username: user.username,
                 restricted
             },
@@ -162,6 +163,7 @@ export class AuthService {
         const expirySeconds = parseInt(this.config.get<string>('auth.jwt.time.refresh'));
 
         const payload: RefreshPayload = {
+            t: TokenType.REFRESH,
             fingerprint: sha256(fingerprint),
             username: user.username
         };
