@@ -1,13 +1,13 @@
-import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
-import {CreateUserDto} from '@/user/dto/create-user.dto';
-import {PrismaService} from '@/core/database/prisma.service';
-import {compare, hash} from 'bcrypt';
-import {ConfigService} from '@nestjs/config';
-import {Prisma, User} from '@prisma/client';
-import {PrismaError} from '@/core/database/prisma-error.enum';
-import {offendingFields} from '@/common/utils/prisma';
-import {RedisService} from '@/core/redis/redis.service';
-import {JwtService} from '@nestjs/jwt';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { CreateUserDto } from '@/user/dto/create-user.dto';
+import { PrismaService } from '@/core/database/prisma.service';
+import { compare, hash } from 'bcrypt';
+import { ConfigService } from '@nestjs/config';
+import { Prisma, User } from '@prisma/client';
+import { PrismaError } from '@/core/database/prisma-error.enum';
+import { offendingFields } from '@/common/utils/prisma';
+import { RedisService } from '@/core/redis/redis.service';
+import { JwtService } from '@nestjs/jwt';
 import {
     AccessPayload,
     FullAccessPayload,
@@ -16,11 +16,11 @@ import {
     TokenFingerprintPair,
     TokenType
 } from '@/core/auth/dto/jwt.dto';
-import {generateFingerprint, sha256} from '@/common/utils/crypto';
+import { generateFingerprint, sha256 } from '@/common/utils/crypto';
 import * as AuthExceptions from '@/common/exceptions/auth';
-import {JsonWebTokenError, TokenExpiredError} from 'jsonwebtoken';
-import {MailService} from '@/common/services/mail/mail.service';
-import {PrismaClientKnownRequestError} from '@prisma/client/runtime';
+import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
+import { MailService } from '@/common/services/mail/mail.service';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
 export type UserNoPassword = Omit<User, 'password'>;
 
