@@ -13,11 +13,12 @@ import {
     FullAccessPayload,
     FullRefreshPayload,
     RefreshPayload,
-    TokenFingerprintPair
+    TokenFingerprintPair,
+    TokenType
 } from '@/core/auth/dto/jwt.dto';
 import { generateFingerprint, sha256 } from '@/common/utils/crypto';
 import * as AuthExceptions from '@/common/exceptions/auth';
-import { TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
+import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import { MailService } from '@/common/services/mail/mail.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
@@ -146,6 +147,7 @@ export class AuthService {
     async grantAccessToken(user: UserNoPassword, restricted?: boolean): Promise<string> {
         return await this.jwtService.signAsync(
             <AccessPayload>{
+                t: TokenType.ACCESS,
                 username: user.username,
                 restricted
             },
@@ -161,6 +163,7 @@ export class AuthService {
         const expirySeconds = parseInt(this.config.get<string>('auth.jwt.time.refresh'));
 
         const payload: RefreshPayload = {
+            t: TokenType.REFRESH,
             fingerprint: sha256(fingerprint),
             username: user.username
         };
@@ -174,14 +177,22 @@ export class AuthService {
     }
 
     async useAccessToken(token: string): Promise<FullAccessPayload> {
-        return await this.jwtService.verifyAsync<FullAccessPayload>(token).catch((e) => {
-            if (e instanceof TokenExpiredError) {
-                throw new AuthExceptions.TokenExpired();
-            } else if (e instanceof JsonWebTokenError) {
-                throw new AuthExceptions.TokenInvalid();
-            }
-            throw e;
-        });
+        const payload: FullAccessPayload = await this.jwtService
+            .verifyAsync<FullAccessPayload>(token)
+            .catch((e) => {
+                if (e instanceof TokenExpiredError) {
+                    throw new AuthExceptions.TokenExpired();
+                } else if (e instanceof JsonWebTokenError) {
+                    throw new AuthExceptions.TokenInvalid();
+                }
+                throw e;
+            });
+
+        if (payload.t !== TokenType.ACCESS) {
+            throw new AuthExceptions.TokenInvalid();
+        }
+
+        return payload;
     }
 
     async useRefreshToken(token: string, fingerprint: string): Promise<UserNoPassword> {
@@ -193,6 +204,10 @@ export class AuthService {
             }
             throw e;
         });
+
+        if (payload.t !== TokenType.REFRESH) {
+            throw new AuthExceptions.TokenInvalid();
+        }
 
         if (sha256(fingerprint) !== payload.fingerprint) {
             throw new AuthExceptions.FingerprintMismatch();
