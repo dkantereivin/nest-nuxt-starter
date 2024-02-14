@@ -7,7 +7,7 @@ import { RecaptchaFailed } from '@/common/exceptions/auth';
 
 // note: this guard
 
-const RECAPTCHA_URL = 'https://www.google.com/recaptcha/api/siteverify';
+const RECAPTCHA_URL = 'https://api.hcaptcha.com/siteverify';
 export const RECAPTCHA_THRESHOLD_METADATA = 'RECAPTCHA_THRESHOLD';
 export const RECAPTCHA_ACTION_METADATA = 'RECAPTCHA_ACTION';
 const DEFAULT_THRESHOLD = 0.5;

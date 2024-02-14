@@ -5,6 +5,7 @@
 # configurations
 *.env
 *.env.yaml
+!TEMPLATE.env
 
 # Logs
 logs
