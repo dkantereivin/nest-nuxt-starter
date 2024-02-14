@@ -20,7 +20,6 @@ import { generateFingerprint, sha256 } from '@/common/utils/crypto';
 import * as AuthExceptions from '@/common/exceptions/auth';
 import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import { MailService } from '@/common/services/mail/mail.service';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
 export type UserNoPassword = Omit<User, 'password'>;
 
@@ -135,7 +134,7 @@ export class AuthService {
             })
             .catch((e) => {
                 if (
-                    e instanceof PrismaClientKnownRequestError &&
+                    e instanceof Prisma.PrismaClientKnownRequestError &&
                     e.code === PrismaError.RelatedRecordNotFound
                 ) {
                     throw new AuthExceptions.UserNotFound();
